@@ -31,5 +31,28 @@ namespace AdventOfCode2025.Helpers
             }
             else return null;
         }
+
+        public static List<string>? ReadSeparatedValues(char separator)
+        {
+            var values = new List<string>();
+            var stringConstruct = "";
+
+            var input = Console.ReadLine();
+            if (string.IsNullOrEmpty(input)) return null;
+            for (int i = 0; i < input.Length; i++)
+            {
+                if (input[i] == separator)
+                {
+                    values.Add(stringConstruct);
+                    stringConstruct = "";
+                }
+                else
+                {
+                    stringConstruct += input[i];
+                }
+            }
+            values.Add(stringConstruct);
+            return values;
+        }
     }
 }

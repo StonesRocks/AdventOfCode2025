@@ -33,6 +33,7 @@ namespace AdventOfCode2025
         private static void RegisterPrograms()
         {
             new _01();
+            new _02();
         }
     }
 }

@@ -13,7 +13,6 @@ namespace AdventOfCode2025.Tasks
         private int numberOfZeros = 0;
         private int numberOfLandedZeros = 0;
 
-        public delegate void RunProgram();
         public _01()
         {
             Action handler = RunProcess;
