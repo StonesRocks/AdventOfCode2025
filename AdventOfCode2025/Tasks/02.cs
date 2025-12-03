@@ -7,18 +7,14 @@ using System.Threading.Tasks;
 
 namespace AdventOfCode2025.Tasks
 {
-    public class _02
+    public class _02 : BaseTask
     {
         private List<Tuple<long, long>> rangeList = new List<Tuple<long, long>>();
         private long DoubleRepeatSum = 0;
         private long FullRepeatSum = 0;
-        public _02()
-        {
-            Action handler = RunProcess;
-            MenuHelper.AddMenu(nameof(_02), handler);
-        }
+        public _02() : base(nameof(_02)) { }
 
-        public void RunProcess()
+        public override void RunProcess()
         {
             Reset();
             SetRange();
@@ -31,7 +27,7 @@ namespace AdventOfCode2025.Tasks
             Console.WriteLine($"Full repeat result: {FullRepeatSum}");
             return;
         }
-        private void Reset()
+        public override void Reset()
         {
             DoubleRepeatSum = 0;
             FullRepeatSum = 0;

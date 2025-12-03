@@ -7,19 +7,15 @@ using System.Threading.Tasks;
 
 namespace AdventOfCode2025.Tasks
 {
-    public class _01
+    public class _01 : BaseTask
     {
         private int currentPosition = 50;
         private int numberOfZeros = 0;
         private int numberOfLandedZeros = 0;
 
-        public _01()
-        {
-            Action handler = RunProcess;
-            MenuHelper.AddMenu(nameof(_01), handler);
-        }
+        public _01() : base(nameof(_01)) { }
 
-        public void RunProcess()
+        public override void RunProcess()
         {
             var inputString = InputReader.ReadMultiple();
             foreach (var item in inputString)

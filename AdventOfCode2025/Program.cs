@@ -34,6 +34,7 @@ namespace AdventOfCode2025
         {
             new _01();
             new _02();
+            new _03();
         }
     }
 }
