@@ -21,6 +21,20 @@ namespace AdventOfCode2025.Helpers
 
             return values;
         }
+        public static bool ReadBool(string message)
+        {
+            Console.WriteLine(message + " (Y/n)");
+            var input = Console.ReadLine();
+            if (bool.TryParse(input, out bool value))
+            {
+                return value;
+            }
+            if(input == "") return true;
+            if (input == "1") return true;
+            if(input == "y") return true;
+            if(input == "yes") return true;
+            else return false;
+        }
 
         public static int? ReadInt()
         {
