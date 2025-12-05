@@ -8,13 +8,13 @@ namespace AdventOfCode2025.Helpers
 {
     public static class InputReader
     {
-        public static List<string> ReadMultiple()
+        public static List<string> ReadMultiple(string escape = "")
         {
             List<string> values = new();
             string? current = Console.ReadLine();
             while (true)
             {
-                if (current == "" || current == null) break;
+                if (current == escape || current == null) break;
                 values.Add(current);
                 current = Console.ReadLine();
             }
@@ -23,13 +23,12 @@ namespace AdventOfCode2025.Helpers
         }
         public static bool ReadBool(string message)
         {
-            Console.WriteLine(message + " (Y/n)");
+            Console.WriteLine(message + " (y/n)");
             var input = Console.ReadLine();
             if (bool.TryParse(input, out bool value))
             {
                 return value;
             }
-            if(input == "") return true;
             if (input == "1") return true;
             if(input == "y") return true;
             if(input == "yes") return true;

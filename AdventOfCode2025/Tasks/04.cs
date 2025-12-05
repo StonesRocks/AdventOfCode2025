@@ -73,6 +73,7 @@ namespace AdventOfCode2025.Tasks
 
         private void LessThan4(List<string> Rows)
         {
+            if (Rows.Count == 0) { return; }
             var RowCount = Rows.Count;
             var ColumnCount = Rows[0].Length;
 
