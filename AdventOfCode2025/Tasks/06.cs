@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,27 +10,75 @@ namespace AdventOfCode2025.Tasks
 {
     public class _06 : BaseTask
     {
-        private long result = 0;
+        List<string> operations = new();
+        List<List<long>> lines = new();
+
         public _06() : base(nameof(_06)) { }
 
         public override void Reset()
         {
-            base.Reset();
+            operations.Clear();
+            lines.Clear();
         }
 
         public override void RunProcess()
         {
             var inputLines = InputReader.ReadMultiple();
-            List<List<long>> lines;
-            List<string> operations;
             ParseInput(inputLines, out lines, out operations);
-            ParseOperation(lines, operations);
-
-            Console.WriteLine($"Result: {result}");
+            var resultp1 = ParseOperations(lines, operations);
+            ParseAlignmentInput(lines, out lines);
+            Console.WriteLine($"Result for p1: {resultp1} \nResult for p2: {ParseOperations(lines, operations)}");
         }
 
-        private void ParseOperation(List<List<long>> lines, List<string> operations)
+        private void ParseAlignmentInput(List<List<long>> lines, out List<List<long>> alignedList)
         {
+            alignedList = new();
+            for (long columnIndex = 0; columnIndex < lines.Count; columnIndex++)
+            {
+                //Find largest number of digits
+                int maxDigits = lines[(int)columnIndex].Max(x => x.ToString().Length);
+                var columnValues = new List<long>(lines[(int)columnIndex])
+                    .Select(x => x.ToString())
+                    .ToList();
+                List<long> alignedValues = new();
+                //If the column index is even reverse the strings effectively inverse the reading order
+                    if (columnIndex % 2 == 0)
+                    {
+                        columnValues = columnValues
+                            .Select(x => new string(x.Reverse().ToArray()))
+                            .ToList();
+                    }
+                for (int digit = 0; digit < maxDigits; digit++)
+                {
+                    var newColumnValue = "";
+
+                    //Loop through each value and build the new column value
+                    foreach (var value in columnValues)
+                    {
+                        if (value.Length > digit)
+                        {
+                            newColumnValue += value[digit];
+                        }
+                    }
+                    //Added the parsed long to the aligned values
+                    alignedValues.Add(long.Parse(newColumnValue));
+                }
+                alignedList.Add(alignedValues);
+            }
+            foreach (var column in alignedList)
+            {
+                Console.Write("Aligned Values: ");
+                foreach (var value in column)
+                {
+                    Console.Write($"{value} ");
+                }
+                Console.WriteLine("");
+            }
+        }
+
+        private BigInteger ParseOperations(List<List<long>> lines, List<string> operations)
+        {
+            BigInteger result = 0;
             for (int i = 0; i < operations.Count; i++)
             {
                 var currentOperations = operations[i];
@@ -37,7 +86,7 @@ namespace AdventOfCode2025.Tasks
                 {
                     long sum = lines[i].Sum();
                     result += sum;
-                    Console.WriteLine($"Sum: {sum}");
+                    //Console.WriteLine($"Sum: {sum}");
                 }
                 else if (currentOperations == "*")
                 {
@@ -47,14 +96,21 @@ namespace AdventOfCode2025.Tasks
                         product *= item;
                     }
                     result += product;
-                    Console.WriteLine($"Product: {product}");
+                    //Console.WriteLine($"Product: {product}");
                 }
             }
+            return result;
         }
 
         private void ParseInput(List<string> inputLines, out List<List<long>> columnList, out List<string> operations)
         {
-            columnList = new List<List<long>>();
+            columnList = new();
+            operations = new();
+            if (inputLines.Count < 2)
+            {
+                Console.WriteLine("Insufficient input provided.");
+                return;
+            }
             for (int i = 0; i < inputLines.Count - 1; i++)
             {
                 var parsedInput = inputLines[i].Split(' ', StringSplitOptions.RemoveEmptyEntries)
