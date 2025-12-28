@@ -26,53 +26,70 @@ namespace AdventOfCode2025.Tasks
             var inputLines = InputReader.ReadMultiple();
             ParseInput(inputLines, out lines, out operations);
             var resultp1 = ParseOperations(lines, operations);
-            ParseAlignmentInput(lines, out lines);
-            Console.WriteLine($"Result for p1: {resultp1} \nResult for p2: {ParseOperations(lines, operations)}");
+            ParseAlignmentInput(inputLines, out long sum);
+            Console.WriteLine($"Result for p1: {resultp1} \nResult for p2: {sum}");
         }
 
-        private void ParseAlignmentInput(List<List<long>> lines, out List<List<long>> alignedList)
+        private void ParseAlignmentInput(List<string> lines, out long sum)
         {
-            alignedList = new();
-            for (long columnIndex = 0; columnIndex < lines.Count; columnIndex++)
+            sum = 0;
+            long partialSum = 0;
+            string? currentOperation = null;
+            // loop through columns
+            for (int idx = 0; idx < lines[0].Length; idx++)
             {
-                //Find largest number of digits
-                int maxDigits = lines[(int)columnIndex].Max(x => x.ToString().Length);
-                var columnValues = new List<long>(lines[(int)columnIndex])
-                    .Select(x => x.ToString())
-                    .ToList();
-                List<long> alignedValues = new();
-                //If the column index is even reverse the strings effectively inverse the reading order
-                    if (columnIndex % 2 == 0)
-                    {
-                        columnValues = columnValues
-                            .Select(x => new string(x.Reverse().ToArray()))
-                            .ToList();
-                    }
-                for (int digit = 0; digit < maxDigits; digit++)
+                string valueContainer = string.Empty;
+                // catch operator
+                string operationString =  lines[lines.Count-1][idx].ToString();
+                if (string.IsNullOrEmpty(operationString) || operationString == " ") {}
+                else 
                 {
-                    var newColumnValue = "";
+                    currentOperation = operationString; 
+                    DebugHelper.Log($"Operation found: {currentOperation}");
+                }
+                // catch all digits in column
+                foreach(var line in lines)
+                {
+                    string stringDigit = line[idx].ToString();
+                    if (long.TryParse(stringDigit, out var digit))
+                    {
+                        valueContainer += digit;
+                    }
 
-                    //Loop through each value and build the new column value
-                    foreach (var value in columnValues)
-                    {
-                        if (value.Length > digit)
-                        {
-                            newColumnValue += value[digit];
-                        }
-                    }
-                    //Added the parsed long to the aligned values
-                    alignedValues.Add(long.Parse(newColumnValue));
                 }
-                alignedList.Add(alignedValues);
-            }
-            foreach (var column in alignedList)
-            {
-                Console.Write("Aligned Values: ");
-                foreach (var value in column)
+                //DebugHelper.Log($"Column value was: {valueContainer}");
+                // if no number was found in column then reset operator
+                if (valueContainer.Length > 0 && long.TryParse(valueContainer, out var value))
                 {
-                    Console.Write($"{value} ");
+                    if (currentOperation is null) {}
+                    else if (currentOperation == "*")
+                    {
+                        if (partialSum is 0) { partialSum = 1; }
+                        partialSum *= value;
+                    }
+                    else if (currentOperation == "+")
+                    {
+                        partialSum += value;
+                    }
+                    DebugHelper.Log($"Operation: {currentOperation}, value: {value}, partialSum; {partialSum}");
                 }
-                Console.WriteLine("");
+                else
+                {
+                    DebugHelper.Log($"Adding {partialSum} to {sum}");
+                    var previousSum = sum;
+                    sum += partialSum;
+                    currentOperation = null;
+                    partialSum = 0;
+                }
+                if (idx == lines[0].Count() - 1)
+                {
+                    DebugHelper.Log($"Adding {partialSum} to {sum}");
+                    var previousSum = sum;
+                    sum += partialSum;
+                    currentOperation = null;
+                    partialSum = 0;
+                }
+                // parse until full column is empty.
             }
         }
 

@@ -23,7 +23,7 @@ namespace AdventOfCode2025.Helpers
         }
         public static bool ReadBool(string message)
         {
-            Console.WriteLine(message + " (y/n)");
+            Console.WriteLine(message + " (y/N)");
             var input = Console.ReadLine();
             if (bool.TryParse(input, out bool value))
             {
